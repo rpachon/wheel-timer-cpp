@@ -20,8 +20,10 @@ TEST(Wheel, should_add_item_of_different_types_in_bucket) {
     Wheel<std::string> wheelString(15);
 
     // When
-    wheelLong.add(4L, 5);
-    wheelString.add("test", 8);
+    long item1 = 4L;
+    wheelLong.add(item1, 5);
+    string item2 = "test";
+    wheelString.add(item2, 8);
 
     // Then
     EXPECT_EQ(wheelLong.get(5)[0], 4);
@@ -33,8 +35,10 @@ TEST(Wheel, should_add_many_items_in_the_same_bucket) {
     Wheel<long> wheel(256);
 
 // When
-    wheel.add(5, 123);
-    wheel.add(7, 123);
+    long item1 = 5;
+    wheel.add(item1, 123);
+    long item2 = 7;
+    wheel.add(item2, 123);
 
 // Then
     auto results = wheel.get(123);
@@ -45,12 +49,18 @@ TEST(Wheel, should_add_many_items_in_the_same_bucket) {
 TEST(Wheel, should_get_next_bucket) {
 // Given
     Wheel<string> wheel(5);
-    wheel.add("test0", 0);
-    wheel.add("test1", 1);
-    wheel.add("test2", 2);
-    wheel.add("test3", 3);
-    wheel.add("test4", 4);
-    wheel.add("test5", 4);
+    string item0 = "test0";
+    string item1 = "test1";
+    string item2 = "test2";
+    string item3 = "test3";
+    string item4 = "test4";
+    string item5 = "test5";
+    wheel.add(item0, 0);
+    wheel.add(item1, 1);
+    wheel.add(item2, 2);
+    wheel.add(item3, 3);
+    wheel.add(item4, 4);
+    wheel.add(item5, 4);
 
 // When
     auto results = wheel.nextBucket();
@@ -87,7 +97,8 @@ TEST(Wheel, should_add_item_when_wheel_is_not_initialized) {
     wheel.nextBucket();
 
 // When
-    wheel.add(2, 1);
+    long item = 2L;
+    wheel.add(item, 1);
 
 // Then
     EXPECT_EQ(wheel.nextBucket()[0], 2);
@@ -99,7 +110,8 @@ TEST(Wheel, should_rotate_when_getting_more_than_size_next_bucket) {
     for (int i = 0; i < 4; ++i) {
         wheel.nextBucket();
     }
-    wheel.add("test", 2);
+    string item = "test";
+    wheel.add(item, 2);
     wheel.nextBucket();
 
 // When
@@ -112,7 +124,8 @@ TEST(Wheel, should_rotate_when_getting_more_than_size_next_bucket) {
 TEST(Wheel, should_clear_bucket_when_bucket_is_ridden) {
 // Given
     Wheel<long> wheel(5);
-    wheel.add(34, 2);
+    long item = 34L;
+    wheel.add(item, 2);
 
     for (int i = 0; i < 10; ++i) {
 // When

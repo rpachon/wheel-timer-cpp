@@ -19,7 +19,7 @@ private:
 
 public:
     Wheel(unsigned int size);
-    void add(T item, unsigned int bucket);
+    void add(T &item, unsigned int bucket);
 
     vector<T> get(unsigned int index);
 
@@ -40,7 +40,7 @@ Wheel<T>::Wheel(unsigned int size) : lenght(size), wheel(size, vector<T>()) {
 }
 
 template<class T>
-void Wheel<T>::add(T item, unsigned int bucket) {
+void Wheel<T>::add(T &item, unsigned int bucket) {
     wheel[(bucket+index)%lenght].push_back(item);
 }
 
