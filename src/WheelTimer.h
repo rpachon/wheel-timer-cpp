@@ -38,7 +38,7 @@ private:
     unsigned int computeWheelNumber(const Milliseconds maxTimeout) const;
     void createWheels(const unsigned int wheelNumber);
 
-    void cascade(vector<TimeoutItem> timeoutItems);
+    void cascade(vector<TimeoutItem> *timeoutItems);
 };
 
 

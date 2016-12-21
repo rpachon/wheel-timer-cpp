@@ -25,7 +25,7 @@ public:
     Wheel(unsigned int size);
     void add(T &item, unsigned int bucket);
 
-    vector<T> nextBucket();
+    vector<T> * nextBucket();
 
     bool hasCascade();
 
@@ -47,13 +47,13 @@ void Wheel<T>::add(T &item, unsigned int bucket) {
 }
 
 template <class T>
-vector<T> Wheel<T>::nextBucket() {
+vector<T> * Wheel<T>::nextBucket() {
     cascade = false;
     if (++index==wheel.size()) {
         index = 0;
         cascade = true;
     }
-    auto result = wheel[index];
+    vector<T> *result = new vector<T>(wheel[index]);
     wheel[index].clear();
     return result;
 }

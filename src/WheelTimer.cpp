@@ -55,8 +55,8 @@ void WheelTimer::add(TimeoutItem& timeoutItem) {
     }
 }
 
-void WheelTimer::cascade(vector<TimeoutItem> timeoutItems) {
-    for (auto it = timeoutItems.begin(); it != timeoutItems.end(); ++it) {
+void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
+    for (auto it = timeoutItems->begin(); it != timeoutItems->end(); ++it) {
         if ((*it).timeOutable.isRunning()) {
             if ((*it).getTimeout().count() == 0) {
                 (*it).timeOutable.timeout();
@@ -65,6 +65,7 @@ void WheelTimer::cascade(vector<TimeoutItem> timeoutItems) {
             }
         }
     }
+    delete(timeoutItems);
 }
 
 void WheelTimer::tick() {

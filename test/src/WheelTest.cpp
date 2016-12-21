@@ -65,28 +65,28 @@ TEST(Wheel, should_get_next_bucket) {
 // When
     auto results = wheel.nextBucket();
 // Then
-    EXPECT_EQ(results[0], "test1");
+    EXPECT_EQ(results->at(0), "test1");
 
 // When
     results = wheel.nextBucket();
 // Then
-    EXPECT_EQ(results[0], "test2");
+    EXPECT_EQ(results->at(0), "test2");
 
 // When
     results = wheel.nextBucket();
 // Then
-    EXPECT_EQ(results[0], "test3");
+    EXPECT_EQ(results->at(0), "test3");
 
 // When
     results = wheel.nextBucket();
 // Then
-    EXPECT_EQ(results[0], "test4");
-    EXPECT_EQ(results[1], "test5");
+    EXPECT_EQ(results->at(0), "test4");
+    EXPECT_EQ(results->at(1), "test5");
 
 // When
     results = wheel.nextBucket();
 // Then
-    EXPECT_EQ(results[0], "test0");
+    EXPECT_EQ(results->at(0), "test0");
 
 }
 
@@ -101,7 +101,7 @@ TEST(Wheel, should_add_item_when_wheel_is_not_initialized) {
     wheel.add(item, 1);
 
 // Then
-    EXPECT_EQ(wheel.nextBucket()[0], 2);
+    EXPECT_EQ(wheel.nextBucket()->at(0), 2);
 }
 
 TEST(Wheel, should_rotate_when_getting_more_than_size_next_bucket) {
@@ -118,7 +118,7 @@ TEST(Wheel, should_rotate_when_getting_more_than_size_next_bucket) {
     auto results = wheel.nextBucket();
 
 // Then
-    EXPECT_EQ(results[0], "test");
+    EXPECT_EQ(results->at(0), "test");
 }
 
 TEST(Wheel, should_clear_bucket_when_bucket_is_ridden) {
@@ -131,9 +131,9 @@ TEST(Wheel, should_clear_bucket_when_bucket_is_ridden) {
 // When
         auto expectedVector = wheel.nextBucket();
 // Then
-        if (i == 1) EXPECT_EQ(expectedVector[0], 34);
+        if (i == 1) EXPECT_EQ(expectedVector->at(0), 34);
         else
-            EXPECT_EQ(expectedVector.size(), 0);
+            EXPECT_EQ(expectedVector->size(), 0);
     }
 
 }

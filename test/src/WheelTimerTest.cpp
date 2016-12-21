@@ -54,10 +54,11 @@ TEST(WheelTimer, should_add_an_item_in_the_first_wheel_when_timeout_between_1_an
         auto wheel = timer.wheels.begin();
         for (int i = 0; i < *it-1; ++i) {
             auto result = (*wheel).nextBucket();
-            EXPECT_EQ(result.size(), 0);
+            EXPECT_EQ(result->size(), 0);
         }
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 1);
+        EXPECT_EQ(result->size(), 1);
+
     }
 }
 
@@ -85,10 +86,10 @@ TEST(WheelTimer, should_add_an_item_in_the_second_wheel_when_timeout_between_257
         auto wheel = timer.wheels.begin()+1;
         for (int i = 0; i < (*it).second-1; ++i) {
             auto result = (*wheel).nextBucket();
-            EXPECT_EQ(result.size(), 0);
+            EXPECT_EQ(result->size(), 0);
         }
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 1);
+        EXPECT_EQ(result->size(), 1);
     }
 }
 
@@ -116,10 +117,10 @@ TEST(WheelTimer, should_add_an_item_in_the_third_wheel_timeout_between_16641_and
         auto wheel = timer.wheels.begin()+2;
         for (int i = 0; i < (*it).second-1; ++i) {
             auto result = (*wheel).nextBucket();
-            EXPECT_EQ(result.size(), 0);
+            EXPECT_EQ(result->size(), 0);
         }
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 1);
+        EXPECT_EQ(result->size(), 1);
     }
 
 }
@@ -156,10 +157,10 @@ TEST(WheelTimer, should_add_an_item_in_first_wheel_when_wheel_has_already_tick) 
         auto wheel = timer.wheels.begin();
         for (int i = 0; i < *it-1; ++i) {
             auto result = (*wheel).nextBucket();
-            EXPECT_EQ(result.size(), 0);
+            EXPECT_EQ(result->size(), 0);
         }
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 1);
+        EXPECT_EQ(result->size(), 1);
     }
 }
 
@@ -183,10 +184,10 @@ TEST(WheelTimer, should_add_an_item_in_second_wheel_when_wheels_has_already_tick
 // Then
     for (int i = 0; i < 57; ++i) {
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 0);
+        EXPECT_EQ(result->size(), 0);
     }
     auto result = (*wheel).nextBucket();
-    EXPECT_EQ(result.size(), 1);
+    EXPECT_EQ(result->size(), 1);
 }
 
 TEST(WheelTimer, should_add_an_item_in_third_wheel_when_wheels_has_already_tick) {
@@ -209,10 +210,10 @@ TEST(WheelTimer, should_add_an_item_in_third_wheel_when_wheels_has_already_tick)
 // Then
     for (int i = 0; i < 60; ++i) {
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 0);
+        EXPECT_EQ(result->size(), 0);
     }
     auto result = (*wheel).nextBucket();
-    EXPECT_EQ(result.size(), 1);
+    EXPECT_EQ(result->size(), 1);
 }
 
 TEST(WheelTimer, should_compute_remaining_time_when_adding_in_wheels) {
@@ -231,10 +232,10 @@ TEST(WheelTimer, should_compute_remaining_time_when_adding_in_wheels) {
     auto wheel = timer.wheels.begin()+2;
     for (int i = 0; i < 2; ++i) {
         auto result = (*wheel).nextBucket();
-        EXPECT_EQ(result.size(), 0);
+        EXPECT_EQ(result->size(), 0);
     }
     auto result = (*wheel).nextBucket();
-    auto timeoutItemToTest = result.begin();
+    auto timeoutItemToTest = result->begin();
     EXPECT_EQ((*timeoutItemToTest).getTimeout().count(), 10848);
 }
 
