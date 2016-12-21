@@ -26,8 +26,8 @@ TEST(Wheel, should_add_item_of_different_types_in_bucket) {
     wheelString.add(item2, 8);
 
     // Then
-    EXPECT_EQ(wheelLong.get(5)[0], 4);
-    EXPECT_EQ(wheelString.get(8)[0], "test");
+    EXPECT_EQ(wheelLong.wheel[5][0], 4);
+    EXPECT_EQ(wheelString.wheel[8][0], "test");
 }
 
 TEST(Wheel, should_add_many_items_in_the_same_bucket) {
@@ -41,7 +41,7 @@ TEST(Wheel, should_add_many_items_in_the_same_bucket) {
     wheel.add(item2, 123);
 
 // Then
-    auto results = wheel.get(123);
+    auto results = wheel.wheel[123];
     EXPECT_EQ(results[0], 5);
     EXPECT_EQ(results[1], 7);
 }

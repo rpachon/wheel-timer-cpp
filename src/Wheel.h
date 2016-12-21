@@ -6,12 +6,16 @@
 #define WHEEL_TIMER_WHEEL_H
 
 #include <vector>
+#include "gtest/gtest_prod.h"
 #include <stdexcept>
 
 using namespace std;
 
 template<class T>
 class Wheel {
+    FRIEND_TEST(Wheel, should_add_item_of_different_types_in_bucket);
+    FRIEND_TEST(Wheel, should_add_many_items_in_the_same_bucket);
+
 private:
     vector<vector<T>> wheel;
     unsigned int index;
@@ -20,8 +24,6 @@ private:
 public:
     Wheel(unsigned int size);
     void add(T &item, unsigned int bucket);
-
-    vector<T> get(unsigned int index);
 
     vector<T> nextBucket();
 
@@ -42,11 +44,6 @@ Wheel<T>::Wheel(unsigned int size) : lenght(size), wheel(size, vector<T>()) {
 template<class T>
 void Wheel<T>::add(T &item, unsigned int bucket) {
     wheel[(bucket+index)%lenght].push_back(item);
-}
-
-template <class T>
-vector<T> Wheel<T>::get(unsigned int index) {
-    return wheel[index];
 }
 
 template <class T>
