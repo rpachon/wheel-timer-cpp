@@ -13,6 +13,7 @@ class MockTimeOutable : public TimeOutable {
 
 public:
     MOCK_METHOD0(timeout, void());
+    MOCK_METHOD0(isRunning, bool());
     MockTimeOutable() {};
 };
 

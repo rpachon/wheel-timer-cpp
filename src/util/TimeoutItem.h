@@ -14,8 +14,8 @@ using namespace std;
 class TimeoutItem {
 
 public:
-    const TimeOutable& timeOutable;
-    TimeoutItem(const TimeOutable& timeOutable, chrono::milliseconds timeout);
+    TimeOutable& timeOutable;
+    TimeoutItem(TimeOutable& timeOutable, chrono::milliseconds timeout);
     chrono::milliseconds getTimeout();
     void updateTimeout(chrono::milliseconds timeout);
 

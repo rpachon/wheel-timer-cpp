@@ -7,7 +7,9 @@
 
 
 class TimeOutable {
+public:
     virtual void timeout() = 0;
+    virtual bool isRunning() = 0;
 };
 
 

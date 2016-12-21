@@ -4,7 +4,7 @@
 
 #include "TimeoutItem.h"
 
-TimeoutItem::TimeoutItem(const TimeOutable& timeOutable, chrono::milliseconds timeout) : timeOutable(timeOutable), timeout(timeout) {
+TimeoutItem::TimeoutItem(TimeOutable& timeOutable, chrono::milliseconds timeout) : timeOutable(timeOutable), timeout(timeout) {
 }
 
 chrono::milliseconds TimeoutItem::getTimeout() {

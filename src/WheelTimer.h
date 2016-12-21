@@ -9,7 +9,6 @@
 #include "gtest/gtest_prod.h"
 #include "Wheel.h"
 #include "util/TimeoutItem.h"
-//#include "Wheel.h"
 
 class WheelTimer {
     FRIEND_TEST(WheelTimer, should_create_wheels_function_of_max_timeout);
@@ -34,10 +33,12 @@ private:
     static const unsigned int OTHER_WHEEL_SIZE;
 
     std::vector<Wheel<TimeoutItem>> wheels;
-    const Milliseconds tickDurationInMillis;
+    const Milliseconds tickDuration;
 
     unsigned int computeWheelNumber(const Milliseconds maxTimeout) const;
-    void createWheels(unsigned int wheelNumber);
+    void createWheels(const unsigned int wheelNumber);
+
+    void cascade(vector<TimeoutItem> timeoutItems);
 };
 
 

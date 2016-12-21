@@ -6,6 +6,8 @@
 #include "../../src/WheelTimer.h"
 #include "util/MockTimeOutable.h"
 
+using ::testing::Return;
+
 TEST(WheelTimer, should_create_wheels_function_of_max_timeout) {
     // Given
     chrono::milliseconds tickDuration(1);
@@ -236,10 +238,47 @@ TEST(WheelTimer, should_compute_remaining_time_when_adding_in_wheels) {
     EXPECT_EQ((*timeoutItemToTest).getTimeout().count(), 10848);
 }
 
+
+
 TEST(WheelTimer, should_cascade_bucket_if_not_in_the_first_wheel) {
 // Given
+    chrono::milliseconds tickDuration(1);
+    chrono::milliseconds maxTimeout(120000);
+    WheelTimer timer(tickDuration, maxTimeout);
 
-// When
+    std::vector<int> valuesToTest;
+    valuesToTest.push_back(1);
+    valuesToTest.push_back(2);
+    valuesToTest.push_back(10);
+    valuesToTest.push_back(125);
+    valuesToTest.push_back(256);
+    valuesToTest.push_back(257);
+    valuesToTest.push_back(16000);
+    valuesToTest.push_back(16384);
+    valuesToTest.push_back(16640);
+    valuesToTest.push_back(16641);
+    valuesToTest.push_back(100000);
+    valuesToTest.push_back(120000);
 
-// Then
+    MockTimeOutable mockTimeOutable;
+    EXPECT_CALL(mockTimeOutable, isRunning())
+                .WillRepeatedly(Return(true));
+
+    for (auto it = valuesToTest.begin(); it != valuesToTest.end(); ++it) {
+        // Given
+        TimeoutItem timeoutItem(mockTimeOutable, chrono::milliseconds(*it));
+        timer.add(timeoutItem);
+
+        // When Then
+        for (int i = 0; i < (*it)-1; ++i) {
+            EXPECT_CALL(mockTimeOutable, timeout())
+                    .Times(0);
+            timer.tick();
+        }
+
+        EXPECT_CALL(mockTimeOutable, timeout())
+                .Times(1);
+        timer.tick();
+
+    }
 }

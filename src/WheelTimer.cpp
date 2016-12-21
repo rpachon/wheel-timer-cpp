@@ -10,12 +10,12 @@ using namespace std;
 const unsigned int WheelTimer::FIRST_WHEEL_SIZE = 256;
 const unsigned int WheelTimer::OTHER_WHEEL_SIZE = 64;
 
-WheelTimer::WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout) : tickDurationInMillis(tickDuration) {
+WheelTimer::WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout) : tickDuration(tickDuration) {
     auto wheelNumber = computeWheelNumber(maxTimeout);
     createWheels(wheelNumber);
 }
 
-void WheelTimer::createWheels(unsigned int wheelNumber) {
+void WheelTimer::createWheels(const unsigned int wheelNumber) {
     Wheel<TimeoutItem> wheel(FIRST_WHEEL_SIZE);
     wheels.push_back(wheel);
 
@@ -27,7 +27,7 @@ void WheelTimer::createWheels(unsigned int wheelNumber) {
 
 unsigned int WheelTimer::computeWheelNumber(const Milliseconds maxTimeout) const {
     unsigned int wheelNumber = 0;
-    auto timePerWheel = FIRST_WHEEL_SIZE * tickDurationInMillis.count();
+    auto timePerWheel = FIRST_WHEEL_SIZE * tickDuration.count();
 
     auto maxTimeOutInMillis = maxTimeout.count();
     while(maxTimeOutInMillis > 0) {
@@ -38,8 +38,8 @@ unsigned int WheelTimer::computeWheelNumber(const Milliseconds maxTimeout) const
 
 void WheelTimer::add(TimeoutItem& timeoutItem) {
     auto timeoutValueInMillis = timeoutItem.getTimeout().count();
-    auto currentWheelTime = FIRST_WHEEL_SIZE * tickDurationInMillis.count();
-    auto bucketDuration = tickDurationInMillis.count();
+    auto currentWheelTime = FIRST_WHEEL_SIZE * tickDuration.count();
+    auto bucketDuration = tickDuration.count();
     timeoutValueInMillis -= bucketDuration;
 
     for (auto it = wheels.begin(); it != wheels.end(); ++it) {
@@ -55,6 +55,23 @@ void WheelTimer::add(TimeoutItem& timeoutItem) {
     }
 }
 
-void WheelTimer::tick() {
+void WheelTimer::cascade(vector<TimeoutItem> timeoutItems) {
+    for (auto it = timeoutItems.begin(); it != timeoutItems.end(); ++it) {
+        if ((*it).timeOutable.isRunning()) {
+            if ((*it).getTimeout().count() == 0) {
+                (*it).timeOutable.timeout();
+            } else {
+                add(*it);
+            }
+        }
+    }
+}
 
+void WheelTimer::tick() {
+    for (int i = 0; i < wheels.size(); ++i) {
+        cascade(wheels[i].nextBucket());
+        if (!wheels[i].hasCascade()) {
+            break;
+        }
+    }
 }
