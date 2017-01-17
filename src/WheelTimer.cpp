@@ -3,6 +3,7 @@
 //
 
 #include <cmath>
+#include <thread>
 #include "WheelTimer.h"
 
 using namespace std;
@@ -37,6 +38,12 @@ unsigned int WheelTimer::computeWheelNumber(const Milliseconds maxTimeout) const
 }
 
 void WheelTimer::add(TimeoutItem& timeoutItem) {
+    lock.lock();
+    computeAndAdd(timeoutItem);
+    lock.unlock();
+}
+
+void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) {
     auto timeoutValueInMillis = timeoutItem.getTimeout().count();
     auto currentWheelTime = FIRST_WHEEL_SIZE * tickDuration.count();
     auto bucketDuration = tickDuration.count();
@@ -61,7 +68,7 @@ void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
             if ((*it).getTimeout().count() == 0) {
                 (*it).timeOutable.timeout();
             } else {
-                add(*it);
+                computeAndAdd(*it);
             }
         }
     }
@@ -69,10 +76,27 @@ void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
 }
 
 void WheelTimer::tick() {
+    lock.lock();
     for (int i = 0; i < wheels.size(); ++i) {
         cascade(wheels[i].nextBucket());
         if (!wheels[i].hasCascade()) {
             break;
         }
     }
+    lock.unlock();
 }
+
+
+void WheelTimer::start() {
+    isStart = true;
+    thread timer(&WheelTimer::run, this);
+    timer.join();
+}
+
+void WheelTimer::run() {
+    while (isStart) {
+        this_thread::sleep_for(tickDuration);
+        tick();
+    }
+}
+
