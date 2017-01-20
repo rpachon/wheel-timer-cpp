@@ -7,9 +7,12 @@
 
 #include <chrono>
 #include <mutex>
+#include <thread>
 #include "gtest/gtest_prod.h"
 #include "Wheel.h"
 #include "util/TimeoutItem.h"
+
+using namespace std;
 
 class WheelTimer {
     FRIEND_TEST(WheelTimer, should_create_wheels_function_of_max_timeout);
@@ -21,6 +24,7 @@ class WheelTimer {
     FRIEND_TEST(WheelTimer, should_add_an_item_in_third_wheel_when_wheels_has_already_tick);
     FRIEND_TEST(WheelTimer, should_compute_remaining_time_when_adding_in_wheels);
     FRIEND_TEST(WheelTimer, should_cascade_bucket_if_not_in_the_first_wheel);
+    FRIEND_TEST(WheelTimer, should_timeout_when_timeout_is_between_two_ticks);
 
     typedef chrono::milliseconds Milliseconds;
 
@@ -28,19 +32,20 @@ public:
     WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout);
     void add(TimeoutItem& timeoutItem);
     void start();
-    inline void stop() { isStart = false; };
+    void stop();;
 
 private:
     static const unsigned int FIRST_WHEEL_SIZE;
     static const unsigned int OTHER_WHEEL_SIZE;
 
     mutex lock;
+    thread *timer;
 
     volatile bool isStart;
 
     void run();
 
-    std::vector<Wheel<TimeoutItem>> wheels;
+    vector<Wheel<TimeoutItem>> wheels;
     const Milliseconds tickDuration;
 
     unsigned int computeWheelNumber(const Milliseconds maxTimeout) const;

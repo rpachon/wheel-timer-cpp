@@ -3,7 +3,6 @@
 //
 
 #include <cmath>
-#include <thread>
 #include "WheelTimer.h"
 
 using namespace std;
@@ -65,7 +64,7 @@ void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) {
 void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
     for (auto it = timeoutItems->begin(); it != timeoutItems->end(); ++it) {
         if ((*it).timeOutable.isRunning()) {
-            if ((*it).getTimeout().count() == 0) {
+            if ((*it).getTimeout().count() < tickDuration.count()) {
                 (*it).timeOutable.timeout();
             } else {
                 computeAndAdd(*it);
@@ -89,14 +88,28 @@ void WheelTimer::tick() {
 
 void WheelTimer::start() {
     isStart = true;
-    thread timer(&WheelTimer::run, this);
-    timer.join();
+    timer = new thread(&WheelTimer::run, this);
 }
 
+void WheelTimer::stop() {
+    isStart = false;
+    timer->join();
+    delete timer;
+}
+
+
 void WheelTimer::run() {
+    const long tickDurationNano = chrono::duration_cast<chrono::nanoseconds>(tickDuration).count();
+    long delta = chrono::high_resolution_clock::now().time_since_epoch().count() + tickDurationNano;
+
     while (isStart) {
-        this_thread::sleep_for(tickDuration);
-        tick();
+        long now = chrono::high_resolution_clock::now().time_since_epoch().count();
+
+        if (now >= delta) {
+            delta += tickDurationNano;
+            this_thread::sleep_for(tickDuration);
+            tick();
+        }
     }
 }
 

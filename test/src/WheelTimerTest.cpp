@@ -283,3 +283,29 @@ TEST(WheelTimer, should_cascade_bucket_if_not_in_the_first_wheel) {
 
     }
 }
+
+TEST(WheelTimer, should_timeout_when_timeout_is_between_two_ticks) {
+// Given
+    chrono::milliseconds tickDuration(30);
+    chrono::milliseconds maxTimeout(120000);
+    WheelTimer timer(tickDuration, maxTimeout);
+
+    MockTimeOutable mockTimeOutable;
+    EXPECT_CALL(mockTimeOutable, isRunning())
+            .WillRepeatedly(Return(true));
+
+    TimeoutItem timeoutItem(mockTimeOutable, chrono::milliseconds(75));
+    timer.add(timeoutItem);
+
+// When Then
+    for (int i = 0; i < 1; ++i) {
+        EXPECT_CALL(mockTimeOutable, timeout())
+                .Times(0);
+        timer.tick();
+    }
+
+    EXPECT_CALL(mockTimeOutable, timeout())
+            .Times(1);
+    timer.tick();
+
+}
