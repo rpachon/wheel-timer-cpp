@@ -1,7 +1,3 @@
-//
-// Created by stan on 19/12/16.
-//
-
 #include "TimeoutItem.h"
 
 TimeoutItem::TimeoutItem(TimeOutable& timeOutable, chrono::milliseconds timeout) : timeOutable(timeOutable), timeout(timeout) {

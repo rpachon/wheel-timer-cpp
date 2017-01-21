@@ -1,7 +1,3 @@
-//
-// Created by stan on 22/11/16.
-//
-
 #include <cmath>
 #include "WheelTimer.h"
 

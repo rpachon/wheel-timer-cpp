@@ -1,7 +1,3 @@
-//
-// Created by stan on 19/12/16.
-//
-
 #ifndef WHEEL_TIMER_TIMEOUTITEM_H
 #define WHEEL_TIMER_TIMEOUTITEM_H
 

@@ -1,7 +1,3 @@
-//
-// Created by stan on 09/11/16.
-//
-
 #ifndef WHEEL_TIMER_WHEEL_H
 #define WHEEL_TIMER_WHEEL_H
 
