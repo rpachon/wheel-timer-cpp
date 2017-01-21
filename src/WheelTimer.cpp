@@ -107,7 +107,6 @@ void WheelTimer::run() {
 
         if (now >= delta) {
             delta += tickDurationNano;
-            this_thread::sleep_for(tickDuration);
             tick();
         }
     }
