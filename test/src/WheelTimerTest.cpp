@@ -1,7 +1,3 @@
-//
-// Created by stan on 22/11/16.
-//
-
 #include <gtest/gtest.h>
 #include "../../src/WheelTimer.h"
 #include "util/MockTimeOutable.h"

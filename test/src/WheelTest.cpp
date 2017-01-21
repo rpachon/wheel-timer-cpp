@@ -1,7 +1,3 @@
-//
-// Created by stan on 09/11/16.
-//
-
 #include <gtest/gtest.h>
 #include "../../src/Wheel.h"
 
