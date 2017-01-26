@@ -39,6 +39,7 @@ void BenchmarkTimeout::waitForAllJobsReturn() const {
 }
 
 void BenchmarkTimeout::addJobs(int iteration) {
+    auto time1 = chrono::high_resolution_clock().now();
     while (--iteration >= 0) {
         JobTimeoutable *job = new JobTimeoutable;
         TimeoutItem *item = new TimeoutItem(*job, chrono::seconds(60));
@@ -47,6 +48,8 @@ void BenchmarkTimeout::addJobs(int iteration) {
         jobs.push_back(job);
         ++nbr;
     }
+    auto time2 = chrono::high_resolution_clock().now();
+    cout << "Time to add Jobs: " << chrono::duration_cast<chrono::milliseconds>(time2 - time1).count() << endl;
 }
 
 void BenchmarkTimeout::computeLatency() const {
