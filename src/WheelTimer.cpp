@@ -1,7 +1,6 @@
 #include <cmath>
 #include "WheelTimer.h"
 
-using namespace std;
 
 const unsigned int WheelTimer::FIRST_WHEEL_SIZE = 256;
 const unsigned int WheelTimer::OTHER_WHEEL_SIZE = 64;
@@ -84,13 +83,12 @@ void WheelTimer::tick() {
 
 void WheelTimer::start() {
     isStart = true;
-    timer = new thread(&WheelTimer::run, this);
+    timer = std::unique_ptr<std::thread>(new thread(&WheelTimer::run, this));
 }
 
 void WheelTimer::stop() {
     isStart = false;
     timer->join();
-    delete timer;
 }
 
 

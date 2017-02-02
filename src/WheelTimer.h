@@ -8,8 +8,6 @@
 #include "Wheel.h"
 #include "util/TimeoutItem.h"
 
-using namespace std;
-
 class WheelTimer {
     FRIEND_TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_one_ms);
     FRIEND_TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_thirty_ms);
@@ -27,13 +25,13 @@ private:
     static const unsigned int OTHER_WHEEL_SIZE;
 
     mutex lock;
-    thread *timer;
+    std::unique_ptr<thread> timer;
 
     volatile bool isStart;
 
     void run();
 
-    vector<Wheel<TimeoutItem>> wheels;
+    std::vector<Wheel<TimeoutItem>> wheels;
     const Milliseconds tickDuration;
 
     unsigned int computeWheelNumber(const Milliseconds maxTimeout) const;
