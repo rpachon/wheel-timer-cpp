@@ -5,22 +5,22 @@
 const unsigned int WheelTimer::FIRST_WHEEL_SIZE = 256;
 const unsigned int WheelTimer::OTHER_WHEEL_SIZE = 64;
 
-WheelTimer::WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout) : tickDuration(tickDuration) {
+WheelTimer::WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout) : tickDuration{tickDuration} {
     auto wheelNumber = computeWheelNumber(maxTimeout);
     createWheels(wheelNumber);
 }
 
-void WheelTimer::createWheels(const unsigned int wheelNumber) {
-    Wheel<TimeoutItem> wheel(FIRST_WHEEL_SIZE);
+void WheelTimer::createWheels(const unsigned int wheelNumber) noexcept {
+    Wheel<TimeoutItem> wheel{FIRST_WHEEL_SIZE};
     wheels.push_back(wheel);
 
     for (int i = 1; i < wheelNumber; ++i) {
-        Wheel<TimeoutItem> wheel(OTHER_WHEEL_SIZE);
+        Wheel<TimeoutItem> wheel{OTHER_WHEEL_SIZE};
         wheels.push_back(wheel);
     }
 }
 
-unsigned int WheelTimer::computeWheelNumber(const Milliseconds maxTimeout) const {
+unsigned int WheelTimer::computeWheelNumber(const Milliseconds &maxTimeout) const noexcept {
     unsigned int wheelNumber = 0;
     auto timePerWheel = FIRST_WHEEL_SIZE * tickDuration.count();
 
@@ -31,13 +31,13 @@ unsigned int WheelTimer::computeWheelNumber(const Milliseconds maxTimeout) const
     return wheelNumber;
 }
 
-void WheelTimer::add(TimeoutItem& timeoutItem) {
+void WheelTimer::add(TimeoutItem& timeoutItem) noexcept {
     lock.lock();
     computeAndAdd(timeoutItem);
     lock.unlock();
 }
 
-void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) {
+void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) noexcept {
     auto timeoutValueInMillis = timeoutItem.getTimeout().count();
     auto currentWheelTime = FIRST_WHEEL_SIZE * tickDuration.count();
     auto bucketDuration = tickDuration.count();
@@ -45,7 +45,7 @@ void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) {
 
     for (auto it = wheels.begin(); it != wheels.end(); ++it) {
         if (timeoutValueInMillis < currentWheelTime) {
-            unsigned int bucket = (unsigned int) (timeoutValueInMillis / bucketDuration);
+            auto bucket = (unsigned int) (timeoutValueInMillis / bucketDuration);
             timeoutItem.updateTimeout(Milliseconds(timeoutValueInMillis - bucket * bucketDuration));
             (*it).add(timeoutItem, bucket + 1);
             break;
@@ -56,7 +56,7 @@ void WheelTimer::computeAndAdd(TimeoutItem &timeoutItem) {
     }
 }
 
-void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
+void WheelTimer::cascade(std::unique_ptr<std::vector<TimeoutItem>> timeoutItems) noexcept {
     for (auto it = timeoutItems->begin(); it != timeoutItems->end(); ++it) {
         if ((*it).timeOutable.isRunning()) {
             if ((*it).getTimeout().count() < tickDuration.count()) {
@@ -66,10 +66,9 @@ void WheelTimer::cascade(vector<TimeoutItem> *timeoutItems) {
             }
         }
     }
-    delete(timeoutItems);
 }
 
-void WheelTimer::tick() {
+void WheelTimer::tick() noexcept {
     lock.lock();
     for (int i = 0; i < wheels.size(); ++i) {
         cascade(wheels[i].nextBucket());
@@ -81,23 +80,23 @@ void WheelTimer::tick() {
 }
 
 
-void WheelTimer::start() {
+void WheelTimer::start() noexcept {
     isStart = true;
-    timer = std::unique_ptr<std::thread>(new thread(&WheelTimer::run, this));
+    timer = std::make_unique<std::thread>(&WheelTimer::run, this);
 }
 
-void WheelTimer::stop() {
+void WheelTimer::stop() noexcept {
     isStart = false;
     timer->join();
 }
 
 
-void WheelTimer::run() {
-    const long tickDurationNano = chrono::duration_cast<chrono::nanoseconds>(tickDuration).count();
-    long delta = chrono::high_resolution_clock::now().time_since_epoch().count() + tickDurationNano;
+void WheelTimer::run() noexcept {
+    const long tickDurationNano = std::chrono::duration_cast<std::chrono::nanoseconds>(tickDuration).count();
+    long delta = std::chrono::high_resolution_clock::now().time_since_epoch().count() + tickDurationNano;
 
     while (isStart) {
-        long now = chrono::high_resolution_clock::now().time_since_epoch().count();
+        long now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 
         if (now >= delta) {
             delta += tickDurationNano;

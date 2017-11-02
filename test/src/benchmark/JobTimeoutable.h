@@ -13,8 +13,8 @@ public:
     const std::chrono::time_point<chrono::high_resolution_clock> start;
     JobTimeoutable();
 
-    virtual void timeout();
-    virtual bool isRunning();
+    virtual void timeout() const;
+    virtual bool isRunning() const;
 
 };
 

@@ -1,12 +1,12 @@
 #include "TimeoutItem.h"
 
-TimeoutItem::TimeoutItem(TimeOutable& timeOutable, chrono::milliseconds timeout) : timeOutable(timeOutable), timeout(timeout) {
+TimeoutItem::TimeoutItem(const TimeOutable& timeOutable, const Milliseconds timeout) : timeOutable(timeOutable), timeout(timeout) {
 }
 
-chrono::milliseconds TimeoutItem::getTimeout() {
+const std::chrono::milliseconds & TimeoutItem::getTimeout() const noexcept {
     return timeout;
 }
 
-void TimeoutItem::updateTimeout(chrono::milliseconds timeout) {
+void TimeoutItem::updateTimeout(const Milliseconds &timeout) noexcept {
     this->timeout = timeout;
 }

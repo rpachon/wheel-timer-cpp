@@ -12,36 +12,36 @@ class WheelTimer {
     FRIEND_TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_one_ms);
     FRIEND_TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_thirty_ms);
 
-    typedef chrono::milliseconds Milliseconds;
+    typedef std::chrono::milliseconds Milliseconds;
 
 public:
     WheelTimer(const Milliseconds tickDuration, const Milliseconds maxTimeout);
-    void add(TimeoutItem& timeoutItem);
-    void start();
-    void stop();;
+    void add(TimeoutItem& timeoutItem) noexcept;
+    void start() noexcept;
+    void stop() noexcept ;
 
 private:
     static const unsigned int FIRST_WHEEL_SIZE;
     static const unsigned int OTHER_WHEEL_SIZE;
 
-    mutex lock;
-    std::unique_ptr<thread> timer;
+    std::mutex lock;
+    std::unique_ptr<std::thread> timer;
 
     volatile bool isStart;
 
-    void run();
+    void run() noexcept;
 
     std::vector<Wheel<TimeoutItem>> wheels;
     const Milliseconds tickDuration;
 
-    unsigned int computeWheelNumber(const Milliseconds maxTimeout) const;
-    void createWheels(const unsigned int wheelNumber);
+    unsigned int computeWheelNumber(const Milliseconds &maxTimeout) const noexcept;
+    void createWheels(const unsigned int wheelNumber) noexcept;
 
-    void cascade(vector<TimeoutItem> *timeoutItems);
+    void cascade(std::unique_ptr<std::vector<TimeoutItem>> timeoutItems) noexcept;
 
-    void tick();
+    void tick() noexcept;
 
-    void computeAndAdd(TimeoutItem &timeoutItem);
+    void computeAndAdd(TimeoutItem &timeoutItem) noexcept;
 };
 
 

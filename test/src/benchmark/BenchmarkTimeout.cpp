@@ -10,11 +10,11 @@ BenchmarkTimeout::~BenchmarkTimeout() {
 }
 
 BenchmarkTimeout::BenchmarkTimeout() {
-    wheelTimer = new WheelTimer(chrono::milliseconds(1), chrono::minutes(2));
+    wheelTimer = new WheelTimer(chrono::milliseconds(5), chrono::minutes(2));
     wheelTimer->start();
     this_thread::sleep_for(chrono::seconds(2));
 
-    int iteration = 1000000;
+    int iteration = 1'000'000;
     addJobs(iteration);
 
     waitForAllJobsReturn();

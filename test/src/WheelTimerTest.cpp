@@ -7,8 +7,8 @@ using ::testing::Return;
 
 TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_one_ms) {
 // Given
-    chrono::milliseconds tickDuration(1);
-    chrono::milliseconds maxTimeout(120000);
+    std::chrono::milliseconds tickDuration(1);
+    std::chrono::milliseconds maxTimeout(120000);
     WheelTimer timer(tickDuration, maxTimeout);
 
     std::vector<int> valuesToTest;
@@ -32,7 +32,7 @@ TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_one_ms) {
 
     for (auto it = valuesToTest.begin(); it != valuesToTest.end(); ++it) {
         // Given
-        TimeoutItem timeoutItem(mockTimeOutable, chrono::milliseconds(*it));
+        TimeoutItem timeoutItem(mockTimeOutable, std::chrono::milliseconds(*it));
         timer.add(timeoutItem);
 
         // When Then
@@ -51,8 +51,8 @@ TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_one_ms) {
 
 TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_thirty_ms) {
 // Given
-    chrono::milliseconds tickDuration(30);
-    chrono::minutes maxTimeout(5);
+    std::chrono::milliseconds tickDuration(30);
+    std::chrono::minutes maxTimeout(5);
     WheelTimer timer(tickDuration, maxTimeout);
 
     std::map<int, int> valuesToTests;
@@ -69,7 +69,7 @@ TEST(WheelTimer, should_timeout_all_items_with_tick_duration_at_thirty_ms) {
 
     for (auto it = valuesToTests.begin(); it != valuesToTests.end(); ++it) {
         // Given
-        TimeoutItem timeoutItem(mockTimeOutable, chrono::milliseconds((*it).first));
+        TimeoutItem timeoutItem(mockTimeOutable, std::chrono::milliseconds((*it).first));
         timer.add(timeoutItem);
 
         // When Then

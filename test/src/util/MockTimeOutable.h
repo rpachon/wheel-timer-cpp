@@ -8,8 +8,8 @@
 class MockTimeOutable : public TimeOutable {
 
 public:
-    MOCK_METHOD0(timeout, void());
-    MOCK_METHOD0(isRunning, bool());
+    MOCK_CONST_METHOD0(timeout, void());
+    MOCK_CONST_METHOD0(isRunning, bool());
     MockTimeOutable() {};
 };
 

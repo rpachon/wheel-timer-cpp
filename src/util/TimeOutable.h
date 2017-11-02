@@ -4,8 +4,8 @@
 
 class TimeOutable {
 public:
-    virtual void timeout() = 0;
-    virtual bool isRunning() = 0;
+    virtual void timeout() const = 0;
+    virtual bool isRunning() const = 0;
 };
 
 

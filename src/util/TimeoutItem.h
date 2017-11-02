@@ -5,18 +5,19 @@
 #include <chrono>
 #include "TimeOutable.h"
 
-using namespace std;
 
 class TimeoutItem {
 
+    typedef std::chrono::milliseconds Milliseconds;
+
 public:
-    TimeOutable& timeOutable;
-    TimeoutItem(TimeOutable& timeOutable, chrono::milliseconds timeout);
-    chrono::milliseconds getTimeout();
-    void updateTimeout(chrono::milliseconds timeout);
+    const TimeOutable& timeOutable;
+    TimeoutItem(const TimeOutable& timeOutable, const Milliseconds timeout);
+    const Milliseconds& getTimeout() const noexcept;
+    void updateTimeout(const Milliseconds &timeout) noexcept;
 
 private:
-    chrono::milliseconds timeout;
+    Milliseconds timeout;
 
 };
 
